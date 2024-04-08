@@ -1,0 +1,562 @@
+cd C:\elasticsearch -> .\bin\elasticsearch.bat
+cd C:\kibana -> .\bin\kibana.bat
+
+--------------------------- Security autoconfiguration information ------------------------------
+
+Authentication and authorization are enabled.
+TLS for the transport and HTTP layers is enabled and configured.
+
+The generated password for the elastic built-in superuser is : cY5cpjOVcwmYEZkcT714
+
+If this node should join an existing cluster, you can reconfigure this with
+'/usr/share/elasticsearch/bin/elasticsearch-reconfigure-node --enrollment-token <token-here>'
+after creating an enrollment token on your existing cluster.
+
+You can complete the following actions at any time:
+
+Reset the password of the elastic built-in superuser with
+'/usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic'.
+
+Generate an enrollment token for Kibana instances with
+ '/usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana'.
+eyJ2ZXIiOiI4LjEzLjEiLCJhZHIiOlsiMTkyLjE2OC4xNS40MDo5MjAwIl0sImZnciI6ImYzZTM2Njk3YWY2MWZkY2NlNThhYTZjNTZmOTM2ZGU0N2QzNGU2NGM2MjE0ZjMzOTdkYTU4YTM1MTE2N2Q4YjMiLCJrZXkiOiJPX1RocTQ0QnRZMGFQTS1LemxESDpQQkJ1YWdvQ1NIS0RsOWZHclRoUm1RIn0=
+
+Generate an enrollment token for Elasticsearch nodes with
+'/usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s node'.
+
+-------------------------------------------------------------------------------------------------
+
+-> ID : elastic, PW : cY5cpjOVcwmYEZkcT714
+
+
+설치 완료 후 서비스 reload, system booting시 자동으로 서비스 시작
+systemctl daemon-reload
+systemctl enable elasticsearch.service // system booting시 자동으로 서비스 시작
+systemctl start elasticsearch.service
+systemctl status elasticsearch.service
+systemctl stop elasticsearch.service
+
+cat bin\kibana-verification-code.bat
+
+/usr/share/elasticsearch/bin
+
+cat /usr/share/kibana/bin/kibana-verification-code.bat
+/root
+
+============================================================================================================
+09:36
+
+원격 Host - Elasticsearch, Kibana 직접 설치 v7
+
+EKS-Stack1 - Elasticsearch, Kibana 직접 설치 v8
+
+EKS-Stack1 - Elasticsearch, Kibana Docker에서 구동 v8
+
+
+systemctl status kibana -> 접속 주소랑 verification code나온다
+접속 주소 : http://192.168.15.40:5601/?code=334145
+verification code : 334 145
+
+
+
+============================================================================================================
+10:35
+
+다시 한 번 물리적으로 설치 연습
+ELK-Stack3 192.168.15.60 22060
+
+ELK-Stack3
+1. Import the Elasticsearch PGP Key : install을 위한 key등록
+wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
+
+
+2. Installing from the APT repository : Elasticsearch가 저장된 Repository 등록
+sudo apt-get install apt-transport-https
+echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list
+
+
+sudo apt-get update && sudo apt-get install elasticsearch
+
+
+--------------------------- Security autoconfiguration information ------------------------------
+
+Authentication and authorization are enabled.
+TLS for the transport and HTTP layers is enabled and configured.
+
+The generated password for the elastic built-in superuser is : +CVrspFF3nimQ0-Ixh49
+
+If this node should join an existing cluster, you can reconfigure this with
+'/usr/share/elasticsearch/bin/elasticsearch-reconfigure-node --enrollment-token <token-here>'
+after creating an enrollment token on your existing cluster.
+
+You can complete the following actions at any time:
+
+Reset the password of the elastic built-in superuser with
+'/usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic'.
+
+Generate an enrollment token for Kibana instances with
+ '/usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana'.
+eyJ2ZXIiOiI4LjEzLjEiLCJhZHIiOlsiMTkyLjE2OC4xNS42MDo5MjAwIl0sImZnciI6IjE0NDM3ZmEyZWE3NzE2YjBhYjgwNDM5NjRlNzkyYmQ5MWJhY2IzNzgzZjE3MzZjZGZlYjdiNzc2NjU1OGJjYTMiLCJrZXkiOiJENnI1cTQ0Qk9qUlVMMUlvTkQtazpVd2lGY0NMQ1J6eVllU2lWQUdRQVFBIn0=
+
+
+Generate an enrollment token for Elasticsearch nodes with
+'/usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s node'.
+
+-------------------------------------------------------------------------------------------------
+
+-> ID : elastic, PW : +CVrspFF3nimQ0-Ixh49
+
+설치 완료 후 서비스 reload, system booting시 자동으로 서비스 시작
+systemctl daemon-reload
+systemctl enable elasticsearch.service // system booting시 자동으로 서비스 시작
+systemctl start elasticsearch.service
+systemctl status elasticsearch.service
+systemctl stop elasticsearch.service
+
+
+
+KIibana설치
+
+1. Import the Elastic PGP key
+wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
+
+
+2. Install from the APT repository
+sudo apt-get install apt-transport-https
+echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list
+sudo apt-get update && sudo apt-get install kibana
+ok
+
+3. Start Elasticsearch and generate an enrollment token for Kibana : Kibana와 Elasticsearch 연동을 위한 token 생성 = Kibana 작동을 위한 Elasticsearch token 생성
+/usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana -> 아까 Elasticsearch설치할 때 같이 나온 명령어
+
+
+
+4. Service 자동 시작
+systemctl daemon-reload
+systemctl enable kibana.service // system booting시 자동으로 서비스 시작
+systemctl start kibana.service // Service 시작
+systemctl status kibana.service // Service 상태 확인
+systemctl stop kibana.service
+
+
+5. 원격 접근 허용하기
+vi /etc/kibana/kibana.yml
+server.host: "localhost" -> server.host: "192.168.15.40"로 변경
+
+
+6. kibana 작동 확인 - windev
+https://192.168.15.40:5601
+token 붙여넣기
+
+
+cat /usr/share/kibana/bin/kibana-verification-code.bat
+/root
+
+systemctl status kibana -> 접속 주소랑 verification code나온다
+http://localhost:5601/?code=896962
+verification code -> 저쪽에서 접속했을 때 나오는 코드
+
+
+============================================================================================================
+11:37
+
+
+Elasticsearch, Kibana 수동 설치
+1. VM설정
+
+2. Elasticsearch 설치
+
+2-1. Import the Elasticsearch PGP Key : install을 위한 key등록
+
+2-2. Installing from the APT repository : Elasticsearch가 저장된 Repository 등록
+
+2-3. sudo apt-get install elasticsearch
+
+2-4. 설치 완료 후 서비스 reload, system booting시 자동으로 서비스 시작
+systemctl daemon-reload
+systemctl enable elasticsearch.service // system booting시 자동으로 서비스 시작
+systemctl start elasticsearch.service
+systemctl status elasticsearch.service
+systemctl stop elasticsearch.service
+
+3. Kibana설치
+3-1. Import the Elastic PGP key : install을 위한 key등록
+
+3-2. Install from the APT repository : Elasticsearch가 저장된 Repository 등록
+sudo apt-get install apt-transport-https
+echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list
+
+3-3. Start Elasticsearch and generate an enrollment token for Kibana : Kibana와 Elasticsearch 연동을 위한 token 생성 = Kibana 작동을 위한 Elasticsearch token 생성
+/usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana
+
+3-4. sudo apt-get install kibana
+
+3-5. Service 자동 시작
+systemctl daemon-reload
+systemctl enable kibana.service // system booting시 자동으로 서비스 시작
+systemctl start kibana.service // Service 시작
+systemctl status kibana.service // Service 상태 확인
+systemctl stop kibana.service
+
+
+3-6. 원격 접근 허용하기
+vi /etc/kibana/kibana.yml
+server.host: "localhost" -> server.host: "ip주소"로 변경
+
+
+3-7.6. kibana 작동 확인
+https://ip주소:5601
+token 붙여넣기
+*systemctl status kibana -> 접속 주소랑 verification code나온다
+
+
+4. License 활성화
+Stack Management -> Stack - License Management ->Start a 30-day trial
+
+
+5. 계정 pw변경
+Stack Management -> Security - Users -> 여러 가지 계정 존재 그 중 elastic(super계정) -> Change password 
+- 기존 : +CVrspFF3nimQ0-Ixh49 -> 변경 : 123456
+log out 후 재접속 성공하면 기본 셋팅 완료
+
+v8부터는 sample data가 엄청 많아졌다.
+Home - Try sample data - start exploring - 다양한 sample data확인 가능
+
+주로 Management - Dev Tools에서 작업 - Query(JSON Query)문 보내서 확인 - 검색, 재사용, 가져오기 등
+
+JSON Query - JSON data를 CRUD할 수 있는 Query
+
+GET(출력하기)
+GET _cat
+GET _cat/indices
+
+============================================================================================================
+12:31
+
+
+https://esbook.kimjmin.net/
+
+9200 - Client가 Elasticsearch에 access / HTTP
+9300 - Elasticsearch끼리 access / TCP
+N개의 Computer(Server - Physical) Grouping = Cluster
+
+Index의 단위 shard = 1 index : N shard in Elasticsearch
+Node = Server in Elasticsearch
+1 Cluster = N Node
+
+REST API를 이용해 JSON Query를 GET, POST, PUT, DELETE한다.
+
+curl로 api요청 가능
+
+
+ELK-Stack2(Docker)
+
+1. Docker설치
+# Add Docker's official GPG key:    <== 도커를 설치하기위한 인증키 셋팅  
+  sudo apt-get update
+  sudo apt-get install ca-certificates curl
+  sudo install -m 0755 -d /etc/apt/keyrings
+  sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+  sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:   < == 도커를 다운받을 레파지토리 업데이트 
+
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt-get update
+
+
+// 도커 설치 
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+// 작동 확인 
+docker -v
+sudo docker run hello-world
+docker                        // 명령어 메뉴얼 잘 출력 
+sudo systemctl status docker 
+
+
+// 설치 완료후 작업 : 특정 사용자 계정에게 도커를 사용할 수 있도록 권한 부여 - root와 같은 그룹으로 묶음으로써 가능
+sudo groupadd docker
+sudo usermod -aG docker $USER(현재 로그온한 계정)
+
+
+
+// Security Issues 
+sudo chmod 666 /var/run/docker.sock
+or sudo chown root:docker /var/run/docker.sock
+
+
+// 확인 
+sudo cat /etc/group 
+   // docker 그룹에 user1, jenkins    계정이 포함. 
+
+
+// 도커 컨테이너 실행 : Docker HUB에서 nginx 최신 버전을 다운 받아서 컨테이너로 작동
+//   run   =>  pull , start   
+docker run -d -p 80:80 nginx
+
+// 컨테이너 정보 확인 
+docker ps
+
+// 다운받은 이미지 정보 확인 
+docker images 
+
+su - user1
+cat /etc/group
+
+
+docker network create elastic
+docker pull docker.elastic.co/elasticsearch/elasticsearch:8.13.1
+
+wget https://artifacts.elastic.co/cosign.pub
+cosign verify --key cosign.pub docker.elastic.co/elasticsearch/elasticsearch:8.13.1
+
+
+============================================================================================================
+14:35
+
+https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started.html
+
+
+Elasticsearch & Kibana 설치 v8.13 
+- Docker Container끼리 통신하려면 같은 Docker Network안에 있어야 한다.
+- Docker Compose를 사용해서 여러 개의 Container를 작동할 때는 동일한 Docker Network에 있어야 한다.
+
+
+docker network create elastic -> elastic이라는 이름의 network 생성
+docker pull docker.elastic.co/elasticsearch/elasticsearch:8.13.1 -> Docker Hub에서 Elasticsearch image 가져오기
+
+
+명령어 : docker network option(create, connect, disconnect, inspect, ls, prune, rm)
+docker network ls -> List
+docker network inspect 네트워크 이름 -> detail확인
+
+
+docker run --name es01 --net elastic -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -t docker.elastic.co/elasticsearch/elasticsearch:8.13.1
+docker run -d --name es01 --net elastic -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -t docker.elastic.co/elasticsearch/elasticsearch:8.13.1 -> 실행
+- elastic이라는 Docker 네트워크에서 동작하도록 설정(같은 Network안에 있어야하니까)
+- es01 : Container 이름
+- elastic : Network 이름
+-d : Background에서 실행하도록 하기 -> 이거 안 쓰면 창 뜬채로 그냥 멈춰져 있다.
+- docker.elastic.co/elasticsearch/elasticsearch:8.13.1 : Docker pull해서 download 받은 image
+
+
+결과
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Elasticsearch security features have been automatically configured!
+✅ Authentication is enabled and cluster connections are encrypted.
+
+ℹ️  Password for the elastic user (reset with `bin/elasticsearch-reset-password -u elastic`):
+  nyi0J7cnPKbjKa3cA8gH
+
+ℹ️  HTTP CA certificate SHA-256 fingerprint:
+  be5b85f495e3761c6d48a8b8e7ed3bdccf5b4ba001658e53fdd9c21a8c2e9a8b
+
+ℹ️  Configure Kibana to use this cluster:
+• Run Kibana and click the configuration link in the terminal when Kibana starts.
+• Copy the following enrollment token and paste it into Kibana in your browser (valid for the next 30 minutes):
+  eyJ2ZXIiOiI4LjEzLjEiLCJhZHIiOlsiMTcyLjE4LjAuMjo5MjAwIl0sImZnciI6ImJlNWI4NWY0OTVlMzc2MWM2ZDQ4YThiOGU3ZWQzYmRjY2Y1YjRiYTAwMTY1OGU1M2ZkZDljMjFhOGMyZTlhOGIiLCJrZXkiOiJodUhUckk0QnZIUzJYVnE0VEpKYTpCMnE1WjRVeFNIT21GbFZCN3d0aG1RIn0=
+
+ℹ️ Configure other nodes to join this cluster:
+• Copy the following enrollment token and start new Elasticsearch nodes with `bin/elasticsearch --enrollment-token <token>` (valid for the next 30 minutes):
+  eyJ2ZXIiOiI4LjEzLjEiLCJhZHIiOlsiMTcyLjE4LjAuMjo5MjAwIl0sImZnciI6ImJlNWI4NWY0OTVlMzc2MWM2ZDQ4YThiOGU3ZWQzYmRjY2Y1YjRiYTAwMTY1OGU1M2ZkZDljMjFhOGMyZTlhOGIiLCJrZXkiOiJoT0hUckk0QnZIUzJYVnE0VEpKWDptekVPdUxIN1R4MmVuMldFX0xkMDB3In0=
+
+  If you're running in Docker, copy the enrollment token and run:
+  `docker run -e "ENROLLMENT_TOKEN=<token>" docker.elastic.co/elasticsearch/elasticsearch:8.13.1`
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ELK-Stack2(Docker)
+ID : elastic
+PW : nyi0J7cnPKbjKa3cA8gH
+Kibana Token : eyJ2ZXIiOiI4LjEzLjEiLCJhZHIiOlsiMTcyLjE4LjAuMjo5MjAwIl0sImZnciI6ImJlNWI4NWY0OTVlMzc2MWM2ZDQ4YThiOGU3ZWQzYmRjY2Y1YjRiYTAwMTY1OGU1M2ZkZDljMjFhOGMyZTlhOGIiLCJrZXkiOiJodUhUckk0QnZIUzJYVnE0VEpKYTpCMnE1WjRVeFNIT21GbFZCN3d0aG1RIn0=
+
+
+docker ps -a -> 잘 올라갔는지 확인
+
+export ELASTIC_PASSWORD=nyi0J7cnPKbjKa3cA8gH -> 환경변수에 elastic 계정 암호 저장
+
+docker cp es01:/usr/share/elasticsearch/config/certs/http_ca.crt . -> Container 내부의 인증서를 현재 폴더에 복사
+Successfully copied 3.58kB to /root/.
+
+curl --cacert http_ca.crt -u elastic:$ELASTIC_PASSWORD https://localhost:9200 
+-> Service가 잘 작동 되는 지 확인
+-> https://localhost:9200에서 REST-API 요청 성공 확인
+{
+  "name" : "5ea1d8cdcf50",
+  "cluster_name" : "docker-cluster",
+  "cluster_uuid" : "myXDOhXnTn6-K-J68RAXWA",
+  "version" : {
+    "number" : "8.13.1",
+    "build_flavor" : "default",
+    "build_type" : "docker",
+    "build_hash" : "9287f29bba5e270bd51d557b8daccb7d118ba247",
+    "build_date" : "2024-03-29T10:05:29.787251984Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.10.0",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+이런 화면 뜨면 성공 완료
+
+
+
+Kibana 다운로드 in Docker
+docker pull docker.elastic.co/kibana/kibana:8.13.1
+
+docker run --name kibana --net elastic -p 5601:5601 docker.elastic.co/kibana/kibana:8.13.1
+docker run -d --name kibana --net elastic -p 5601:5601 docker.elastic.co/kibana/kibana:8.13.1
+
+
+============================================================================================================
+15:32
+
+Docker container로 올리면 원격접속 허용 따로 설정 안 해도 들어가진다.?
+192.168.15.50:5601
+
+Container에 접속해서 관리
+docker exec -it Container ID /bin/bash
+docker exec -it 8f6213c71841 /bin/bash
+exit
+
+
+http://192.168.15.50:5601/?code=612495 
+
+30분 지나서 다시 생성
+docker run --name es01 --net elastic -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -t docker.elastic.co/elasticsearch/elasticsearch:8.13.1
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Elasticsearch security features have been automatically configured!
+✅ Authentication is enabled and cluster connections are encrypted.
+
+ℹ️  Password for the elastic user (reset with `bin/elasticsearch-reset-password -u elastic`):
+  ZxcE*zugCVZmDShVjeni
+
+ℹ️  HTTP CA certificate SHA-256 fingerprint:
+  14ac4c201ace387ba3dd9f8f9247c7dd7f7fdd3f692e28e82272a0aa05adeee9
+
+ℹ️  Configure Kibana to use this cluster:
+• Run Kibana and click the configuration link in the terminal when Kibana starts.
+• Copy the following enrollment token and paste it into Kibana in your browser (valid for the next 30 minutes):
+  eyJ2ZXIiOiI4LjEzLjEiLCJhZHIiOlsiMTcyLjE4LjAuMjo5MjAwIl0sImZnciI6IjE0YWM0YzIwMWFjZTM4N2JhM2RkOWY4ZjkyNDdjN2RkN2Y3ZmRkM2Y2OTJlMjhlODIyNzJhMGFhMDVhZGVlZTkiLCJrZXkiOiJTWmtUclk0QjluWllfdl9qQzJwUDotbklBMm00NVFfRzJkaHBnNUFFSVp3In0=
+
+ℹ️ Configure other nodes to join this cluster:
+• Copy the following enrollment token and start new Elasticsearch nodes with `bin/elasticsearch --enrollment-token <token>` (valid for the next 30 minutes):
+  eyJ2ZXIiOiI4LjEzLjEiLCJhZHIiOlsiMTcyLjE4LjAuMjo5MjAwIl0sImZnciI6IjE0YWM0YzIwMWFjZTM4N2JhM2RkOWY4ZjkyNDdjN2RkN2Y3ZmRkM2Y2OTJlMjhlODIyNzJhMGFhMDVhZGVlZTkiLCJrZXkiOiJSNWtUclk0QjluWllfdl9qQzJvdDpQUi1wb2N3X1NPQ21RWnhoY2pkV19nIn0=
+
+  If you're running in Docker, copy the enrollment token and run:
+  `docker run -e "ENROLLMENT_TOKEN=<token>" docker.elastic.co/elasticsearch/elasticsearch:8.13.1`
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+elastic
+ZxcE*zugCVZmDShVjeni -> 123456
+
+
+
+docker run --name kibana --net elastic -p 5601:5601 docker.elastic.co/kibana/kibana:8.13.1
+
+http://192.168.15.50:5601/?code=915984
+
+
+
+============================================================================================================
+16:37
+
+Management - Dev Tools
+
+
+# Click the Variables button, above, to create your own variables.
+GET ${exampleVariable1} // _search
+{
+  "query": {
+    "${exampleVariable2}": {} // match_all
+  }
+}
+
+
+Elastic DSL - Elasticsearch에서 사용하는 JSON data를 Query하는 구문
+GET, POST, PUT, DELETE
+
+1줄 선택하고 실행시키고, 선택하고 실행시키고 이런식으로 가는 건가?
+
+
+GET _cat : Elasticsearch의 전체적인 정보 출력
+GET _cat/shards : shard정보 출력
+GET _cat/indices : index정보 출력
+
+
+DBMS		=		Elasticsearch
+Table		=		Index
+record		=		document
+column		=		field
+schema		=		mapping
+
+
+index생성, 확인, 삭제
+PUT index1 -> index생성(빈 상태)
+GET index1 -> index 1개 정보 확인
+GET _cat/indices -> 전체 index정보 확인
+Delete index1 -> index 삭제 : "acknowledged": true(성공)
+
+Document 생성, 확인, 삭제 = 값 넣기
+PUT index2/_doc/1 = insert into
+{
+ "name":  "a",
+ "age" : 24,
+ "gender" : "남자"
+}
+
+GET index2 - mappings 밑에 properties 밑에 있는 것들이 값
+
+PUT index2/_doc/2
+{
+ "name":  "b",
+ "country" : "kor"
+}
+
+*data의 column들이 달라도 상관 없다. 대량의 data가 막 들어온다. - NO SQL, MongoDB
+
+PUT index2/_doc/3
+{
+ "name":  "c",
+ "age" : "22",
+ "country" : "kor"
+}
+
+*같은 field명에 값 형태가 다르게 들어가면, 가장 먼저 생성한 column의 type을 기준으로 저장한다.
+
+GET index2/_search - document의 모든 내용 출력
+
+
+============================================================================================================
+17:37
+
+Sample data 내용 출력
+GET _cat/indices
+
+index(table 자료형?) 정보 확인
+GET kibana_sample_data_ecommerce
+
+index의 document값을 확인
+GET kibana_sample_data_ecommerce/_search
+
+GET kibana_sample_data_flights/_search
+
+Analytics - Discover - 데이터들 조회 가능 - 기본적으로 기한은 7일전으로 설정된 상태
+
+DevTools에서는 data형식으로 확인
+Analytics - Discover에서는 data 여러 조건별로 상세 확인
+field값 직접 검색해서 확인하는 것도 가능
+어떤 Data 볼건지 선택도 가능하고, 필터 적용(Add filter)해서 구분도 가능
+import안 되는 경우도 있음
+
+
+
+
+
+

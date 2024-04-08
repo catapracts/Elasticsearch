@@ -1,0 +1,471 @@
+https://192.168.15.40:5601
+
+systemctl daemon-reload
+systemctl enable elasticsearch.service // system booting시 자동으로 서비스 시작
+systemctl start elasticsearch.service
+systemctl status elasticsearch.service
+systemctl stop elasticsearch.service
+
+
+systemctl daemon-reload
+systemctl enable kibana.service // system booting시 자동으로 서비스 시작
+systemctl start kibana.service // Service 시작
+systemctl status kibana.service // Service 상태 확인
+systemctl stop kibana.service
+
+elastic
+123456
+
+
+
+
+https://192.168.15.50:5601
+http://192.168.15.50:5601/?code=915984
+
+docker run --name es01 --net elastic -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -t docker.elastic.co/elasticsearch/elasticsearch:8.13.1
+docker run --name kibana --net elastic -p 5601:5601 docker.elastic.co/kibana/kibana:8.13.1
+
+elastic
+123456
+
+
+
+============================================================================================================
+09:34
+
+
+DevOps
+Dev - Java, Spring, React, HTML, CSS, Javascript, SQL, AJAX, Axios, 
+Ops - CI/CD(Jenkins, Docker, Kubernetes), Elastic-Stack
+
+
+Elasticsearch - Stack - 여러 개의 서버(node)가 하나의 cluster로 묶여있는 상태
+BEATS = Data수집
+Elasticsearch = JSON형태로 저장 / Lucene 기반
+KIBANA = 수집한 data 시각적으로 보여준다.
+
+-------------------------------------------------------------------------------------------
+
+*저장 위치는 간단하게 C바로 밑 이런식으로 해야 나중에 파일이 안 깨진다.
+**Kibana는 Elasricsearch먼저 실행 후 실행하기
+Window
+원격 Host에 elasticsearch, kibana v7 설치된 상태 -> test용도 / cmd 3개 열고 시작
+cd C:\elasticsearch\bin("C:\elasticsearch\bin" = 절대 경로로 이동) -> .\elasticsearch.bat
+cd C:\kibana\bin("C:\kibana\bin" = 절대 경로로 이동) -> .\kibana.bat
+http://localhost:5601/
+Management - Stack Management -> Stack - License Management -> trial license 활성화
+Elastic Management - Dev Tools
+
+
+# Elastic DSL 기본 구문 익히기 : JSON 데이터를 쿼리 하는 구문
+   
+
+GET _search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+# Elastic DSL : JSON 데이터를 쿼리 하는 구문 
+
+# GET : Select 
+# POST : Insert 
+# PUT  : Update 
+# DELETE : Delete 
+
+# _cat : 전체적인 정보를 출력  -> ★가장 많이 사용★
+GET _cat
+
+# 샤드 정보 출력 
+GET _cat/shards
+
+# Index 정보를 출력 
+GET _cat/indices
+
+# 용어 정리 
+# =================================
+#  DBMS          엘라틱 서치 
+# ================================= 
+#  테이블         인덱스 
+#  레코드         도규먼트 
+#  컬럼           필드 
+#  스키마         매핑 
+# =================================
+
+# 인덱스 생성/ 확인  / 삭제 
+PUT index1 
+
+GET index1 
+
+# index 정보를 출력 한다. 테이블 정보를 출력 
+GET _cat/indices
+
+DELETE index1
+
+# 도규먼트 생성 
+PUT index2/_doc/1
+{
+  "name": "홍길동", 
+  "age": 30 , 
+  "gender": "Man"
+}
+
+# 인덱스 정보 확인 
+GET index2 
+
+# 도규먼트 생성 
+PUT index2/_doc/2
+{
+  "name" : "이순신", 
+  "contry": "kor"
+}
+
+PUT index2/_doc/3 
+{
+  "name" : "강감찬", 
+  "age"  : "20", 
+  "contry" : "kor"
+}
+
+# 도규먼트의 모든 내용 출력 하기 
+GET index2/_search
+
+# 샘플 데이터의 내용을 출력해 보기 
+GET _cat/indices
+
+# index (테이블의 자료형)  정보를 확인 
+GET kibana_sample_data_ecommerce
+
+# index 의 Document 의 값을 확인 
+GET kibana_sample_data_ecommerce/_search
+
+GET kibana_sample_data_flights/_search
+
+
+
+============================================================================================================
+10:32
+
+kubernetes 엔지니어가 전무 상태
+
+Docker - Volume, Mount, Docker Network 개념
+
+Kaggle - Big Data, Elasticsearch에 필요한 데이터들이 저장되어 있는 커뮤니티 사이트 / https://www.kaggle.com/
+공공데이터 포털 - https://www.data.go.kr/
+
+- 전국 주소록 검색 결과
+https://www.data.go.kr/tcs/dss/selectDataSetList.do?keyword=%EC%A0%84%EA%B5%AD+%EC%A3%BC%EC%86%8C%EB%A1%9D&brm=&svcType=&instt=&recmSe=N&conditionType=init&extsn=&kwrdArray=
+로그인해서 볼 수도 있고, 어떤건 무료 공개
+
+무료 API 사이트 모음
+- https://github.com/dl0312/open-apis-korea
+- https://www.wanted.co.kr/community/post/431
+
+
+============================================================================================================
+11:34
+
+국가데이터맵
+https://www.data.go.kr/tcs/opd/ndm/view.do
+
+
+kaggle 로그인
+https://www.kaggle.com/search?q=tmdb+5000+movie+dataset
+movie 검색 - dataset선택 - TMDB 5000 Movie Dataset
+
+
+1.필요한 데이터 다운로드
+tmdb_5000_movies.csv : 1900 ~ 2017년도까지 전세계 영화정보에 대한 DB, CSV
+
+
+2. Logstash를 이용해서 필터링
+Logstash = 전처리 / Elassticsearch, Kibana 작동된 상태 + JAVA(v1.8이상)설치된 상태여야 실행 가능 / Port No. : 9600
+cd C:\logstash\bin -> .\logstash.bat -e "input { stdin {} } output { stdout {} }" : 필터처리 구문
+Successfully started Logstash API endpoint {:port=>9600} 문구 뜨면 작동 완료
+
+
+
+3. Kibana를 이용해 필요한 데이터를 import, Elasticsearch로 JSON data import
+Elastic Home - Upload a file - 파일 넣기 -> 12:34에서 이어진다.
+Summary
+Number of lines analyzed	1000 : sample data 중 표시된 일부 개수
+Format	delimited : CSV파일
+Delimiter	, : CSV파일은 ,로 data를 구분한다. / tab, 공백 등 다양함
+Has header row	true : 첫 번째 줄은 field명을 정의한 줄인가?
+Time field	release_date : 어떤 column이 time을 지정한 field인가?
+Time format	ISO8601 : 
+
+
+DevTools에서 vulk insert 진행
+
+
+4. Kibana Dashboard 사용해서 필요한 정보 읽어와서 Graph
+
+
+
+============================================================================================================
+12:34
+
+*Elasticsearch가 10~50개가 하나의 cluster 이런 식으로 운영
+*Kibana에서는 100MB이하 파일만 import가능
+Kibana - Discover - 날짜를 기준으로 데이터가 출력된다 => 날짜 field가 어느 부분이라고 정의를 해줘야 데이터 조회가 가능하다.
+
+3. Kibana를 이용해 필요한 데이터를 import, Elasticsearch로 CSV파일을 JSON data로 import
+Elastic Home - Upload a file - 파일 넣기 -> Override settings - Apply - import 
+★Time field★ -> 여기에서 지정하는 field명을 기준으로 Kibana에서 data 조회 -> 이걸 기반으로 index pattern이 생성됨
+import시 column명 일부 변경 가능
+다 설정하고 apply한 뒤 import
+
+index = Table(Elasticsearch에서 사용되는 data가 JSON형식으로 저장된 table) 
+index pattern = elasticsearch의 index값을 가져와서 index pattern만든다. / 이게 있어야 Kibana에서 visualize해서 사용 가능 / Table의 값을 indexing한 것
+shard = index가 저장되는 단위
+index ≠ index pattern
+
+
+-> tmdb_5000_movie1(Index Pattern이름) - import
+Advanced tab으로 들어가서 customize할 수도 있다.
+
+Import complete
+Index	tmdb_5000_movie1
+Index pattern	tmdb_5000_movie1
+Ingest pipeline	tmdb_5000_movie1-pipeline
+Documents ingested	4723
+Failed documents	80 -> 불러오기 실패한 data들 갯수
+
+
+DevTools - data 잘 들어왔는지 확인
+GET _cat/indices : 현재 import된 index들 목록
+GET tmdb_5000_movie1/_search : 모든 values가져오기
+GET tmdb_5000_movie1 : index정보만 가져오기
+
+
+
+
+
+============================================================================================================
+14:32
+
+shard - node가 저장되는 단위
+
+PUT index3 -> index 생성
+GET index3 -> index 확인
+DELETE index3 -> index삭제
+PUT index3/_doc/1 -> record input
+{
+  "name" : "aaa",
+  "age" : 20,
+  "country" : "kor"
+}
+PUT index3/_doc/2 -> record input
+{
+  "name" : "bbb",
+  "age" : 22,
+  "country" : "UK"
+}
+GET index3/_doc/2-> record 확인
+
+GET index3/_search -> 모든 record 확인
+kibana_sample_data_logs : 이런식으로 log 붙어 있으면 index pattern임
+
+GET _cat/indices -> index pattern이 만들어진 index들만 출력된다.
+
+Management - Stack Management -> Kibana - Index Patterns - Create Index Patterns 
+Index pattern name : index3 - next strp - create index pattern
+
+Management - Stack Management -> Kibana - Index Patterns - 생성된 index pattern들 확인 가능
+Kibana - Discover에서 확인 가능
+
+
+import -> 전처리 작업 -> visualize
+
+logstash를 이용한 전처리 작업 - 이걸 해야 그래프 그릴 수 있다.
+
+GET tmdb_5000_movie1/_search 
+- "keywords"에 해당하는 데이터를 검색하면 "title"이 나온다
+
+GET tmdb_5000_movie1
+- "genres"보면 배열처럼 보이지만 텍스트다 -> 처리과정 필요함
+
+
+
+4. Logstash에서 전처리 작업 후 Elasticsearch로 전송
+현재 tmdb_5000_movie.csv의 1st record = 필드명 선언 column -> index document에 등록 방지
+genre column = text -> 배열 형식으로 전처리
+
+
+5. Kibana Dashboard 사용해서 필요한 정보 읽어와서 Graph
+날짜 정보 필터 설정해서 데이터 나오게 하기
+
+
+============================================================================================================
+15:32
+
+4. Logstash에서 전처리 작업 후 Elasticsearch로 전송
+현재 tmdb_5000_movie.csv의 1st record = 필드명 선언 column -> index document에 등록 방지
+genre column = text -> 배열 형식으로 전처리
+
+
+
+tmdb_5000_movie.csv -> 정제되지 않은 파일
+3가지 전처리 - input, filter, output
+input 	=>    filter 	=>     output
+원본파일     전처리Logic	     Elasticsearch
+
+
+
+C:\logstash\config - logstash 설정파일들 있는 위치
+
+logstash-sample.conf
+# Sample Logstash configuration for creating a simple
+# Beats -> Logstash -> Elasticsearch pipeline.
+
+input {
+  beats {
+    port => 5044 ->BEATS에서 받아서
+  }
+}
+
+
+filter현재 없음
+
+
+output {
+  elasticsearch { -> Elasticsearch로 보내겠다.
+    hosts => ["http://localhost:9200"]
+    index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
+    #user => "elastic"
+    #password => "changeme"
+  }
+}
+
+
+
+
+logstash-tmdb2.conf(전처리 작업 수행하는 설정 파일)생성
+
+input file
+input {
+  file {
+    path => "C:/example/tmdb_5000_movies.csv"
+    start_position => "beginning"
+    sincedb_path => "nul"
+  }
+}
+
+output {
+  stdout {} : standard output
+}
+
+
+.\bin\logstash.bat -f .\config\logstash-tmdb2.conf -> C:\logstash\config\logstash-tmdb2.conf(logstash 설정파일)을 필터 안 쓰고 화면(cmd)에 출력
+
+
+
+
+logstash-tmdb3.conf(전처리 작업 수행하는 설정 파일)생성 - 지금 설정은 전처리 안 하고 그냥 통짜로 집어 넣는 것(filter적용 아직 안 한 상태)
+input file
+input {
+  file {
+    path => "C:/example/tmdb_5000_movies.csv"
+    start_position => "beginning"
+    sincedb_path => "nul"
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["http://localhost:9200"]
+    index => "tmdb_5000_movies3"
+    #user => "elastic"
+    #password => "changeme"
+  }
+}
+
+
+
+.\bin\logstash.bat -f .\config\logstash-tmdb3.conf -> 오타 주의 ~tmdb3conf -> ~tmdb3.conf로 변경
+
+
+
+============================================================================================================
+16:35
+
+100MB이하 파일
+100MB이상 파일 - logstash이용 
+
+.\bin\logstash.bat -f .\config\logstash-tmdb2.conf
+.\bin\logstash.bat -f .\config\logstash-tmdb3.conf
+위 2개는 전처리과정 없이 바로 데이터 집어 넣은 경우 = Kibana에서 visualize 불가능
+첫 번째 line의 field명 선언한 부분 때문에 제대로 데이터 안 들어가진다.
+
+
+logstash에서 C:/example/tmdb_5000_movies.csv파일을 읽어서 전처리 작업 후 Elasticsearch로 전송 logstash-tmdb4.conf
+.\bin\logstash.bat -f .\config\logstash-tmdb4.conf - filter_json_ruby파일 사용
+input file
+input {
+  file {
+    path => "C:/example/tmdb_5000_movies.csv"
+    start_position => "beginning"
+    sincedb_path => "nul"
+  }
+}
+
+filter {
+  csv {
+    separator => ","
+    columns => ["budget","genres","homepage","id","keywords","original_language",
+    "original_title","overview","popularity","production_companies","production_countries",
+    "_release_date","revenue","runtime","spoken_languages","status","tagline",
+    "title","vote_average","vote_count"]							=> Column명
+    remove_field => ["message", "production_companies", "production_countries",
+    "keywords", "spoken_languages", "@timestamp", "path", "@version", "host"]
+    skip_header => true								=> 필드명 중 안 넣을 애들 명시
+  }
+  date {										=> 날짜 형식 변경
+    match => ["_release_date", "YYYY-MM-dd"]						=> release_date column이 "YYYY-MM-dd"라는 String 형식으로 들어가니까
+    target => "release_date"
+    timezone => "UTC"								=> 타입 바꿔라
+    remove_field => "_release_date"
+  }
+  json {
+    source => "genres"
+    target => "genres"
+  }
+  ruby {										=> 장르 형식 변경(String -> 배열) / ruby plugin이용
+    code => "
+    genres = event.get('genres').map{ |genre| genre['name'] }
+    event.set('genres', genres)
+    "
+  }
+}
+
+
+output {
+  elasticsearch {
+    hosts => ["http://localhost:9200"]
+    index => "tmdb_5000_movies3"
+    #user => "elastic"
+    #password => "changeme"
+  }
+}
+
+
+logstash-tmdb3.conf -> message 보면 column이름이랑 값이 전부 하나의 String형식으로 통으로 들어온다
+logstash-tmdb4.conf -> message는 없고, genre안에 id-name pair로 들어가 있다.
+logstash-tmdb4 -> json,. ruby 지운 상태다
+
+
+============================================================================================================
+17:34
+
+
+들어온 데이터 타입 변경 & 맵핑
+
+
+
+
+
+
+
+

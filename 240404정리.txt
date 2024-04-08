@@ -1,0 +1,300 @@
+09:36
+
+Elastic Search - 검색 엔진으로 시작 / 서버 몇 만대 있는데, 각 서버의 Event를 한 번에 보여주는 system / 모든 기업이 이거 쓴다 / query문은 잘 만들어졌는데 느리다?!
+
+Stack
+
+원래 7년차 정도에서 썼던 건데, 지금은 다 쓸 줄 알아야 한다.(국내외 활발하게 사용함)
+
+검색엔진에서 시작 -> 현재는 기업의 데이터 관련 모든 문제 해결을 위한 Sol기반 플랫폼
+
+RDBMS - Big Data 혼자 처리 불가능 -> Hadoop에서 가져와서 처리 -> 처리하는 내용들을 JSON형식으로 가지고 와서 Monitoring
+
+Elastic Search 
+- 루신엔진기반 - 검색 성능 가장 빠름 / 그래프 형태로 출력 / 분산처리 - Server(Node) 확장으로 퍼포먼스 유지 가능 / REST-API - JSON type으로 저장된 상태 / 빠르게 실시간으로 Visuallize / 쉬운 확장성, 고가용성 지원
+- TB, PB급 용량도 실시간 수집&분석 가능 / 세상의 모든 데이터 형태 저장(자동 인덱싱) / 데이터 유기적으로 조합, 분석
+
+정형 data - data가 insert될 때마다, type검사 한다 (ex)RDBMS - DB의 Table 같은 것들 
+비정형 data - 대량의 data 빠르게 insert가능 why? - type검사 안 하기 때문 (ex)MongoDB - JSON형태로 저장
+IoT - 센서 감지 장비들 -> 감지한 data를 중앙 DB로 전송해서 저장
+index(색인)
+
+Lucene Algotirhm - 대량 data 빠르게 처리
+
+수집, 저장, 검색, 분석, 처리 후 시각화
+
+수집영역
+- BEATS : End단(Server, Host)에서 데이터(정형, 비정형) 수집기 -  수집 후 Elastic Search에 던져준다. / 여러 종류 존재
+- ES-Hadoop Plugins
+
++ 문서영역
+- Logstash : Data 전처리 - 필요한 데이터들만 가공 
+- Elasticsearch(Data indexing) : 가공한 데이터들을 색인작업 index
+
++ 표현영역
+- KIBANA : 색인작업 끝난 데이터들을 Visualize해서 보여준다.
+
+BEATS -> Logstash + Elasticsearch -> KIBANA
+
+
+Elastic Stack - Data 문제 해결을 위한 플랫폼 = BEATS + Logstash + KIBANA + Elasticsearch
+= ELK Stack
+
+============================================================================================================
+10:41
+
+실행 : eventvwr.msc = Event Viewer
+
+Windows 로그 
+- 응용프로그램 : OS위에 실행되고 있는 App들에 대한 log들
+- 보안 : Server에 누가 언제 로그온/오프했는지 기록
+- Setup : 어떤 프로그램을 누가 설치했는지 알려준다.
+- 시스템 : 시스템적으로 발생한 로그
+
+응용 프로그램 및 서비스 로그
+
+이런 식으로 로그들을 확인할 수 있는데, 이런 것들을 가져올 수 있다. by Event ID
+
+통합 로그(로그, 메트릭, APM, Uptime) 분석 가능
+
+단일 플랫폼에서 분석 가능
+- 보안 분석(SIEM+EDR)  - 장비, SW, 협업 tool 등 다양
+- 마케팅/비즈니스 분석
+- 로그/성능/APM
+- 검색
+
+확장팩(x-pack) 존재
+
+
+
+BEATS
+- Back-End의 수집기
+- src로부터 파일, system metric, network packet, SW, Hadoop 등(각각이 하나의 beat) 수집
+- Elasticsearch로 전송할 때, 곧바로 가능한 것도 있고, 그렇지 않은 것들도 있다.
+- Elasticsearch(Logstash 안 거치고), Logstash 및 메시지 queue(Karfka, Redis)로 전송
+ES-Hadoop, Logstash를 통해 Elasticsearch로 전달
+- 종류 90개 정도
+
+
+
+Logstash
+- Pipeline을 통해 입력받은 데이터를 변환 & 확장, Elasticsearch를 비롯한 다양한 System으로 전송
+- 구조 : 지원 Input + 지원 Filter + 지원 Output
+Logstash -> Messaging Queue(Kafka, Redis 자주 사용한다.)로도 가능하다
+
+
+
+
+
+KIBANA
+- Elasticsearch에서 받은 내용을 다양한 형태로 Visualize
+
+
+============================================================================================================
+11:37
+
+https://www.elastic.co/kr/
+-공식 사이트 문서 정리 등 잘 되어있으니 확인해볼 것
+
+Elastic Stack 설치 - v7.10.1(2020 12 10), v8.1.3
+elastic search, kibana설치
+Window - Test, 실습 용도(v7.10)
+Linux - 운영 환경(v 8.13)
+Linux Docker - 운영 환경(v 8.13)
+SaaS
+
+
+https://www.elastic.co/kr/downloads - 모든 버전 다운로드 가능 / 오늘은 Elasticsearch와 KIBANA설치할 것
+홈페이지 접속 - 리소스 - 다운로드 - 무료 개방형 Elastic(ELK) Stack / 통합을 통해 데이터 수집 및 연결
+애저 EC2, 구글 클라우드 등으로 배포도 가능
+
+
+
+다운 받고 C:\에 저장
+cmd(관리자 권한) - 저장한 위치로 이동 -> cd C:\elasticsearch -> .\bin\elasticsearch.bat
+
+멈춘 것처럼 보이면 일단 cmd 하나 더 띄운 다음 curl -X GET "localhost:9200/?pretty" 써서 확인 -  elasticsearch는 9200번 사용한다
+{
+  "name" : "DESKTOP-VI3SD85",
+  "cluster_name" : "elasticsearch",
+  "cluster_uuid" : "M_i8W7N9S3uZZta0zYsKig",
+  "version" : {
+    "number" : "7.10.1",
+    "build_flavor" : "default",
+    "build_type" : "zip",
+    "build_hash" : "1c34507e66d7db1211f66f3513706fdf548736aa",
+    "build_date" : "2020-12-05T01:00:33.671820Z",
+    "build_snapshot" : false,
+    "lucene_version" : "8.7.0",
+    "minimum_wire_compatibility_version" : "6.8.0",
+    "minimum_index_compatibility_version" : "6.0.0-beta1"
+  },
+  "tagline" : "You Know, for Search"
+}
+이렇게 뜨면 잘 설치된 것
+
+이 상태에서 kibana 올린다.
+
+
+============================================================================================================
+12:38
+
+https://www.elastic.co/kr/support/matrix - 어떤 OS깔리는지 확인 가능
+제품이 많다보니까 깔리는 버전이 있고, 아닌 것도 있다. 즉, OS랑 버전이랑 호환되는지 확인 필요
+
+현재 elastic search 실행 중이므로 ctrl + c 눌러서 종료시키기 않기
+
+curl -X GET "localhost:9200/?pretty" = REST-API요청 보내기
+
+kibana : Port = 5601 - elasticsearch가 작동되고 있는 상태에서만 사용 가능
+C:\kibana\bin아래 kibana.bat 실행시키면 된다. - .\bin\kibana.bat
+실행시키면 elasticsearch킨 cmd에서도 Event가 발생한다.
+지금하고 있는건 설치작업이 아니라 단순히 실행만 시켜보는 것
+
+Kibana UUID: 67f35266-da14-48af-9ce4-bac0f3202409
+http://localhost:5601 -> 브라우저에서 접속 시 관리툴 출력됨
+접속한 다음 라이센스 무료 30일 활성화 시켜야 한다. / 기능들이나 옵션들이 굉장히 많으니 주의
+
+Explore on my own -> 왼쪽 상단 줄3개 누르면 메뉴바 열린다 -> Home - 여러 메뉴들 나오는데, 이건 버전마다 배치나 구성이 다르다
+왼쪽 상단 줄3개 - Kibana - Maps, Canvas, visualize 등 여러 항목 존재
+왼쪽 상단 줄3개 - Managements - Dev Tools -> 여기에서 작업한다.
+왼쪽 상단 줄3개 - Managements - Stack Management - Stack - License Management - Start a 30-day trial - Start my trials * 2 - 활성화 완료
+왼쪽 상단 줄3개 - Home - Try our sample data - 3개 나오는데 아무거나 Add data누르면 된다.(셋 다 넣어도 된다.) remove도 가능
+왼쪽 상단 줄3개 - Kibana - Dashboard에서 data 확인 가능
+
+
+1.관리자 페이지 들어가기
+2. 무료 라이센스 적용하기(라이센스 업데이트 - 30일 무료 / 계속 새로 압축 풀고 새로 생성해서 갱신 가능)
+3. 샘플파일 넣기(Elastic에서 제공하는 기본 파일)
+
+KIBANA
+- Dashboards - visualize된 전체 data들 확인 가능
+
+
+============================================================================================================
+15:32
+
+
+Linux - Ubuntu 22.04 
+ELK-Stack1 : 192.168.15.40 / 운영 환경 1 - 직접 설치 / Port Forwarding : 22040 / 
+
+
+ELK-Stack2(Docker) : 192.168.15.50 + Docker / 운영 환경 2 - Docker Image이용 / Port Forwarding : 22050 / 
+
+DOCS - 설치 가이드 등이 존재
+
+suse 계열
+rpm - Redhat계열 (ex) CentOS, ...
+apt-get - Debian계열 (ex)Debian, Ubuntu, Kali ...
+
+Install Elasticsearch with Debian Package
+Install Elasticsearch with Docker
+
+cat /etc/netplan/00-installer-config.yaml
+cat /etc/hostname
+
+
+
+============================================================================================================
+16:37
+
+ELK-Stack1
+1. Import the Elasticsearch PGP Key : install을 위한 key등록
+wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
+
+
+2. Installing from the APT repository : Elasticsearch가 저장된 Repository 등록
+sudo apt-get install apt-transport-https
+echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list
+
+
+sudo apt-get update && sudo apt-get install elasticsearch
+
+
+--------------------------- Security autoconfiguration information ------------------------------
+
+Authentication and authorization are enabled.
+TLS for the transport and HTTP layers is enabled and configured.
+
+The generated password for the elastic built-in superuser is : cY5cpjOVcwmYEZkcT714
+
+If this node should join an existing cluster, you can reconfigure this with
+'/usr/share/elasticsearch/bin/elasticsearch-reconfigure-node --enrollment-token <token-here>'
+after creating an enrollment token on your existing cluster.
+
+You can complete the following actions at any time:
+
+Reset the password of the elastic built-in superuser with
+'/usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic'.
+
+Generate an enrollment token for Kibana instances with
+ '/usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana'.
+eyJ2ZXIiOiI4LjEzLjEiLCJhZHIiOlsiMTkyLjE2OC4xNS40MDo5MjAwIl0sImZnciI6ImYzZTM2Njk3YWY2MWZkY2NlNThhYTZjNTZmOTM2ZGU0N2QzNGU2NGM2MjE0ZjMzOTdkYTU4YTM1MTE2N2Q4YjMiLCJrZXkiOiJEcEJUcUk0QmJha29BRmpJaEVWZDotUFRBMHBaWFExNldja21MMXhidTFBIn0=
+
+Generate an enrollment token for Elasticsearch nodes with
+'/usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s node'.
+
+-------------------------------------------------------------------------------------------------
+
+-> ID : elastic, PW : cY5cpjOVcwmYEZkcT714
+
+설치 완료 후 서비스 reload, system booting시 자동으로 서비스 시작
+systemctl daemon-reload
+systemctl enable elasticsearch.service // system booting시 자동으로 서비스 시작
+systemctl start elasticsearch.service
+systemctl status elasticsearch.service
+systemctl stop elasticsearch.service
+
+
+
+============================================================================================================
+17:35
+
+
+Elasticsearch깔린 후 Kibana올라가기
+
+
+ELK-Stack1
+
+https://www.elastic.co/guide/en/kibana/current/deb.html
+
+KIibana설치
+
+1. Import the Elastic PGP key
+wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
+
+
+2. Install from the APT repository
+sudo apt-get install apt-transport-https
+echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list
+sudo apt-get update && sudo apt-get install kibana
+ok
+
+3. Start Elasticsearch and generate an enrollment token for Kibana : Kibana와 Elasticsearch 연동을 위한 token 생성 = Kibana 작동을 위한 Elasticsearch token 생성
+/usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana -> 아까 Elasticsearch설치할 때 같이 나온 명령어
+eyJ2ZXIiOiI4LjEzLjEiLCJhZHIiOlsiMTkyLjE2OC4xNS40MDo5MjAwIl0sImZnciI6ImYzZTM2Njk3YWY2MWZkY2NlNThhYTZjNTZmOTM2ZGU0N2QzNGU2NGM2MjE0ZjMzOTdkYTU4YTM1MTE2N2Q4YjMiLCJrZXkiOiJEcEJUcUk0QmJha29BRmpJaEVWZDotUFRBMHBaWFExNldja21MMXhidTFBIn0=
+
+
+4. Service 자동 시작
+systemctl daemon-reload
+systemctl enable kibana.service // system booting시 자동으로 서비스 시작
+systemctl start kibana.service // Service 시작
+systemctl status kibana.service // Service 상태 확인
+systemctl stop kibana.service
+
+
+5. 원격 접근 허용하기
+vi /etc/kibana/kibana.yml
+server.host: "localhost" -> server.host: "192.168.15.40"로 변경
+
+
+6. kibana 작동 확인 - windev
+https://192.168.15.40:5601
+token 붙여넣기
+
+cat bin\kibana-verification-code.bat
+
+/usr/share/elasticsearch/bin
+
+systemctl status kibana
+
