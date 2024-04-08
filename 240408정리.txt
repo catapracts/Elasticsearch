@@ -459,12 +459,86 @@ logstash-tmdb4 -> json,. ruby 지운 상태다
 ============================================================================================================
 17:34
 
-
 들어온 데이터 타입 변경 & 맵핑
+GET _cat/indices		      -> index들 출력
+GET tmdb_5000_movies4	      -> 각 column의 data type(Schema(DBMS), mapping(Elasticsearch))확인
+GET tmdb_5000_movies4/_search -> value 출력
+
+template적용해서 mapping
+
+template_tmdb -> index template / DevTools에서 실행
+PUT _index_template/tmdb
+{
+  "index_patterns": "tmdb_5000_movie*", -> 이런 형식의 이름으로 들어오는 파일들은
+  "priority": 1,
+  "template": { -> column들 전부 이런식으로 바꿔서 저장 / 맵핑되어있는 상태
+    "mappings": {
+        "properties": {
+        "budget": { "type": "double" },
+        "popularity" : { "type": "double" },
+        "vote_average" : { "type": "double" },
+        "vote_count" : { "type": "double" },
+        "id" : { "type": "long" },
+        "revenue" : { "type": "long" },
+        "runtime" : { "type": "long" },
+        "genres" : { "type": "keyword" },
+        "original_language" : { "type": "keyword" },
+        "status" : { "type": "keyword" },
+        "homepage" : { "type": "text" },
+        "original_title" : { "type": "text" },
+        "overview" : { "type": "text" },
+        "tagline" : { "type": "text" },
+        "title" : { "type": "text" },
+        "release_date" : { "type": "date", "format" : "iso8601" }
+      }
+    }
+  }
+}
+
+GET _cat/templates - Template 확인
+GET _index_template/tmdb - 아까 만든 거 확인
 
 
 
+logstash-tmdb5.conf
+input {
+  file {
+    path => "C:/example/tmdb_5000_movies.csv"
+    start_position => "beginning"
+    sincedb_path => "nul"
+  }
+}
 
+filter {
+  csv {
+    separator => ","
+    columns => ["budget","genres","homepage","id","keywords","original_language",
+    "original_title","overview","popularity","production_companies","production_countries",
+    "_release_date","revenue","runtime","spoken_languages","status","tagline",
+    "title","vote_average","vote_count"]
+    remove_field => ["message", "production_companies", "production_countries",
+    "keywords", "spoken_languages", "@timestamp", "path", "@version", "host"]
+    skip_header => true
+  }
+  date {
+    match => ["_release_date", "YYYY-MM-dd"]
+    target => "release_date"
+    timezone => "UTC"
+    remove_field => "_release_date"
+  }
+
+}
+
+output {
+  elasticsearch {
+    hosts => ["http://localhost:9200"]
+    index => "tmdb_5000_movies5"
+    #user => "elastic"
+    #password => "changeme"
+  }
+}
+
+.\bin\logstash.bat -f .\config\logstash-tmdb5.conf
 
 
 
