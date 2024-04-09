@@ -540,6 +540,7 @@ output {
 
 .\bin\logstash.bat -f .\config\logstash-tmdb5.conf
 
+column들 잘 맵핑된 상태
 
 
 

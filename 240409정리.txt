@@ -1,0 +1,122 @@
+cd C:\elasticsearch -> .\bin\elasticsearch.bat
+cd C:\kibana -> .\bin\kibana.bat
+cd C:\logstash -> .\bin\logstash.bat -f .\config\파일 이름.conf
+
+
+https://192.168.15.40:5601
+
+systemctl daemon-reload
+systemctl enable elasticsearch.service // system booting시 자동으로 서비스 시작
+systemctl start elasticsearch.service
+systemctl status elasticsearch.service
+systemctl stop elasticsearch.service
+
+
+systemctl daemon-reload
+systemctl enable kibana.service // system booting시 자동으로 서비스 시작
+systemctl start kibana.service // Service 시작
+systemctl status kibana.service // Service 상태 확인
+systemctl stop kibana.service
+
+elastic
+123456
+
+
+https://192.168.15.50:5601
+http://192.168.15.50:5601/?code=915984
+
+docker run --name es01 --net elastic -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -t docker.elastic.co/elasticsearch/elasticsearch:8.13.1
+docker run --name kibana --net elastic -p 5601:5601 docker.elastic.co/kibana/kibana:8.13.1
+
+elastic
+123456
+
+
+============================================================================================================
+09:36
+
+kakao Server 약 2만대 - kubernetes 운영자 2명 - 자동화
+IT기술은 2~3년 주기로 신기술 업데이트 된다.
+Kaggle - AI, BigData 등을 다루는 커뮤니티
+elastic 실행시킬 때, 관리자 권한으로 실행하는 게 좋다
+cluster - 여러 개의 server(node)를 하나의 network로 묶어주는 역할
+logstash
+filebeat
+
+Elasticsearch(:9200) -> Kibana(:5601) -> logstash -> filebeat -> Kibana Dashboard 사용해서 필요한 정보 읽어와서 그래프로 출력
+
+
+============================================================================================================
+10:32
+
+Kibana console 명령어
+index 확인
+GET _cat/indices : index정보 출력
+GET index이름 : 각 column들의 자료형
+GET index이름/_search : index의 value 출력
+
+index pattern 생성
+
+_ 있는 field들 : Kibana에서 제공
+_ 없는 field들 : input으로 들어온 애들
+
+
+============================================================================================================
+11:348
+
+
+Kibana Discover -> 필요한 정보들 필터링해서 읽어오기
+Kibana Visualize -> Graph로 시각화
+Kibana Dashboards -> Visualized한 pattern의 묶음
+
+원본파일(~.csv, log, etc...)
+Logstash - JSON형태로 전처리 / Index template생성
+Elasticsearch - Index생성(upload)
+Kibana -Index pattern 생성 - 반드시 date관련 column이 있어야 하고 이거 기준으로 만들어야 한다. //현재 여기까지 완료함
+Kibana Visualize - 시각화, pattern 생성
+Kibana Dashboards 
+
+
+막대 그래프 그리기
+Kibana - Visualize - Create visualization - Data Table - tmdb_5000_movies6 선택
+Buckets, Metric 등 이용해서 다양하게 조건 설정 후 visualize한 다음 이름 정하고 save
+
+
+============================================================================================================
+12:37
+
+
+
+
+============================================================================================================
+14:32
+
+Dashboard에 나오는 결과물들은 index pattern들 불러온 것들이다.
+
+Kibana - Dashboard - Create dashboard - Save눌러서 파일 이름 정하고 저장한 뒤 시작
+Add - pattern 불러오기 / 기본적으로 24시간 이내 값만 출력하니까 설정 필요함 - 선택하면 자동으로 불러온다. - 톱니바퀴 눌러서 시간 설정 가능
+share - Embeded code - iFrame code로 공유 
+
+
+============================================================================================================
+15:32
+
+1900 년도에서 2017년도까지의 5000개의 영화 데이터 csv 파일을 LogStash 를 사용하여 데이터 전처리 작
+업을 해서 Elas7cSearch 의 index : movie_5000_index 으로 JSON으로 저장하세요. Index 템플릿을 생성해서 각
+컬럼의 자료형을 키바나에서 사용할 수 있는 유의미한 자료형으로 적용 하세요.
+키바나에서 생성된 movie_5000_index 를 index pa4ern 을 생성해서 Kibana 에서 사용 가능하도록 구성후 아
+래 내의 물음에 답하시오.
+- C:/example/tmdb_5000_movies.csv
+
+- 발표 자료를 PPT로 생성후 pdf 로 변환하여 영문이름으로 해서 업로드 하시오.
+[문항 1] Kibana 의 Discover 에서 2000 ~ 2016년의 자료를 출력 하되 voit_average 가 4~ 10인 데이터를 필터
+링 해서 출력 하시오
+
+[문항 2] Kibana의 Visualize에서 vote_average (평점) 별로 영화의 수익(budet)을 막대 그래프로 출력하시오.
+- 평점은 0 ~ 10 점까지 있습니다.
+
+[문항 3] Kibana의 Dashboard 에서 2번내용을 추가 해서 적용 하시오.
+
+
+
+
