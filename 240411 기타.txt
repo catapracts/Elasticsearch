@@ -1,0 +1,454 @@
+maven - pom.xml
+gradle - build.gradle
+
+둘 다 기능은 똑같음 - 라이브러리 자동 다운로드, 배포 기능 / 형식만 다를 뿐 / 프로젝트 팀장님의 성향차이에 따라 달라질 수 있다.
+예날에는 maven 지금은 gradle
+
+
+Spring - v2.x -> Spring Fox
+Spring - v3.x -> Spring Docs
+
+
+MyBatis - SI / 추적하기 쉬우나 구현하기 어렵다 -> 개발자가 어떤식으로 진행하느냐에 따라 구현능력이 달라진다. 유지 보수에는 상대적으로 용이 / 금융권에서 사용
+JPA - SM / 자동화가 잘 되어있다 but 추적하기 어려움 = 복잡함 -> 유지 보수하기 어렵다. / MyBatis의 진화형
+
+
+CORS - REST API할 때, Spring Security에서 따로 setting을 해줘야, CORS운영 정책에 위배되지 않는다.
+README.md -> vscode로 열면 보인다. / ~.md(markdown)파일 문법 존재함 / 마크다운 설명서, 마크다운 문법 같은 걸로 검색
+
+=================================================================================================================
+
+JWT(JSON Web Token) - Token기반 인증 / Cloud HDD에 JSON Token으로 생성 / MSA - MicroService에서 사용 / Client HDD에 인증 정보를 저장
+SPA
+
+
+Server memory에 사용자 정보 저장
+
+=================================================================================================================
+
+C:\logstash-7\config - 
+
+file
+첫 줄은 보통 column명 등 JSON data에 대한 정보들이 들어오므로 filter를 이용해 조정할 필요가 있다.
+filter {
+  csv {
+    separator => "," : ~.csv파일 구분할 때, ,사용하겠다.
+    columns => ["budget","genres","homepage","id","keywords","original_language",
+    "original_title","overview","popularity","production_companies","production_countries",
+    "_release_date","revenue","runtime","spoken_languages","status","tagline",
+    "title","vote_average","vote_count"] -> CSV의 column들 중 gathering할 것들 선택
+    remove_field => ["message", "production_companies", "production_countries",
+    "keywords", "spoken_languages", "@timestamp", "path", "@version", "host"] -> CSV의 column들 중 remove할 것들 선택
+    skip_header => true -> 첫 줄 생략
+  } 
+  date {
+    match => ["_release_date", "YYYY-MM-dd"] -> 날짜 타입으로 변환
+    target => "release_date" -> 이 column을
+    timezone => "UTC"
+    remove_field => "_release_date"
+  }
+}
+
+
+index template 생성
+
+
+PUT _index_template/tmdb
+{
+  "index_patterns": "tmdb_5000_movie*", -> 이런 이름으로 들어오는 애들은 이 patern을 적용한다.
+  "priority": 1,
+  "template": {
+    "mappings": {
+        "properties": { -> data가 들어올 때, String형식으로 오는데, 각각의 type 지정
+        "budget": { "type": "double" },
+        "popularity" : { "type": "double" },
+        "vote_average" : { "type": "double" },
+        "vote_count" : { "type": "double" },
+        "id" : { "type": "long" },
+        "revenue" : { "type": "long" },
+        "runtime" : { "type": "long" },
+        "genres" : { "type": "keyword" },
+        "original_language" : { "type": "keyword" },
+        "status" : { "type": "keyword" },
+        "homepage" : { "type": "text" },
+        "original_title" : { "type": "text" },
+        "overview" : { "type": "text" },
+        "tagline" : { "type": "text" },
+        "title" : { "type": "text" },
+        "release_date" : { "type": "date", "format" : "iso8601" }
+      }
+    }
+  }
+}
+
+
+.\bin\logstash.bat -f .\config\logstash-tmdb8.conf
+
+-f .\config\logstash-tmdb8.conf : 이 파일을 읽어서
+.\bin\logstash.bat : logstash 실행
+
+
+Buckets, Metric -> String형식으로는 안 먹힐 수 있으니, 형변환이 필요하다.
+
+Kibana - Dashboard, Discover, Graph, Visualize etc.. -> 시각자료 생성
+
+Dashboard -> share - Embeded code - Snapshot, Filter bar, Short URL 선택 후 Copy iFrame code
+<iframe src="http://localhost:5601/goto/225bff353b008c7a77fb5728b58d7b13" height="600" width="800"></iframe>
+이런 code가 생긴다. 이걸 가지고 사이트에 code 넣으면 완성
+
+==========================================================================================
+Client(localhost:8090) : React(8000) : Spring(3000)
+
+CORS 설정 안 하면 다른 API요청 시 error 뜰 수 있다.
+현재는 gradle쓰는 추세
+pyload = Server -> Client Value
+Spring : 3000
+MyBatis - @Mapper이용해서 SQL Query연결
+
+
+
+File - Import - Maven - Existing Maven Projects - pom.xml 선택하고 finish
+
+https://mvnrepository.com/ -> 여기서 라이브러리 찾고 넣기 가능 / 버전별 호환성도 제공함
+<dependencies>이 안에 넣기</dependencies>
+
+
+jwt package
+Token관련 정보 정리 - 암호화 방식, 유효 기간, Token 길이 등
+application.properties -> jwt.secret=jwtsecretkey 추가한다 -> JwtTokenUtil.java - ${jwt.secret}라는 값을 이용해서 암호화 진행
+
+
+Login.js / Logout.js / Join.js 
+-> member.dto.request.LoginRequest.java/JoinRequest.java + member.controller.MemberController.java + jwt package(JWT Token인증)
+-> member.dto.request.LoginResponse.java/JoinResponse.java + member.controller.MemberController.java +(->) member.service.MemberService.java
+-> member.dto.request.LoginResponse.java/JoinResponse.java + member.controller.MemberController.java -> Login.js / Logout.js / Join.js
+로그인과 화원가입 관련해서는 이 과정을 거친다. -> 성공하고 나면 Bbs(게시판)으로 간다.
+없는 아이디 입력, 비밀번호 잘 못 입력, 아이디 잘 못 입력 등 오류 발생 시 -> member.exception.MemberException.java가 추가 실행된다.
+
+
+
+
+@RestController = Responsebody + Controller = JSON으로 통신하겠다.
+
+	private final MemberService service;
+
+	public MemberController(MemberService service) {
+		this.service = service;
+	} => 이런식으로 써서 객체 활성화 시킬 수 있다.
+JoinRequest -> MemberDTO안에 존재 / Client에 넣을 값들
+
+
+- member.controller.MemberController.java
+@GetMapping
+public ResponseEntity<?> checkIdDuplicate(@RequestParam String id)
+{
+System.out.println("UserController checkIdDuplicate " + new Date());
+HttpStatus status = service.checkIdDuplicate(id);
+return new ResponseEntity<>(status);
+} -> id 중복 체크
+
+
+@PostMapping("/join")
+public ResponseEntity<JoinResponse> join(@Valid @RequestBody JoinRequest req) -> 값(req객체(join.js)) 들어온다.
+{
+System.out.println("UserController join " + new Date());
+return ResponseEntity.ok(service.join(req));
+} -> 회원가입 성공 시 return(Service의 join method)
+
+
+
+
+- member.service.MemberService.java
+public HttpStatus checkIdDuplicate(String id) 
+{
+isExistUserId(id);
+return HttpStatus.OK;
+} ->  id 중복 체크
+
+
+private void isExistUserId(String id) 
+{
+Integer result = dao.isExistUserId(id);
+if (result == 1) 
+{
+throw new MemberException("이미 사용중인 아이디입니다.", HttpStatus.BAD_REQUEST);
+}
+} ->  id 중복 체크
+
+
+@Transactional
+public JoinResponse join(JoinRequest req)
+{
+saveMember(req);
+authenticate(req.getId(), req.getPwd());
+return new JoinResponse(req.getId());
+} -> 회원가입 작동
+
+
+private void saveMember(JoinRequest req) 
+{
+// 아이디 중복 확인
+isExistUserId(req.getId());
+// 패스워드 일치 확인
+checkPwd(req.getPwd(), req.getCheckPwd());
+// 회원 정보 생성
+String encodedPwd = encoder.encode(req.getPwd());
+CreateMemberParam param = new CreateMemberParam(req, encodedPwd);
+Integer result = dao.createMember(param);
+if (result == 0) {
+throw new MemberException("회원 등록을 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+}
+}
+
+
+private void authenticate(String id, String pwd) 
+{
+try
+{
+authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(id, pwd));
+}
+catch (DisabledException e) 
+{
+throw new MemberException("인증되지 않은 아이디입니다.", HttpStatus.BAD_REQUEST);
+}
+catch (BadCredentialsException e)
+{
+throw new MemberException("비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
+}
+}
+
+
+
+
+
+- dto.request.JoinRequest
+member.dto.param,CreateMemberParam.java -> React에서 가져온 값을 DB에 저장하기 위해 만든 DTO
+member.dao.MemberDao.java -> Repository, @Mapper적용된 상태 - Member.xml에 미리 만든 SQL문 사용한다. = MyBatis형식
+
+
+
+
+
+- config.WebCoinfig.java
+CORS Settings
+
+
+
+
+- config.DatabaseConfig.java
+@Bean
+public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception 
+{
+logger.info("DatabaseConfig sqlSessionFactory(): {}", new Date());
+SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+sqlSessionFactoryBean.setDataSource(dataSource);
+Resource[] resources = new PathMatchingResourcePatternResolver().getResources("classpath:sqls/*.xml");
+sqlSessionFactoryBean.setMapperLocations(resources);
+sqlSessionFactoryBean.getObject().getConfiguration().setMapUnderscoreToCamelCase(true);
+return (SqlSessionFactory) sqlSessionFactoryBean.getObject();
+} -> SQL Query문을 ~.xml에서 가져온다.
+
+src/main/resources/sqls/~.xml여러개 있고 여기에서 SQL Query문 직접 작성한 다음 가져온다.
+
+
+
+
+Member.xml - 회원가입 & 로그인 관련 SQL Query / pw를 암호화 해서 저장한다.
+Comment.xml - 댓글 관련 SQL Query
+Bbs.xml - 게시판 관련 SQL Query
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+React : 8090 port이용해서 open한 다음 3000 port이용해서 작동한다.
+npm install 1번 치니까 오류나는데  2번 치니까 왜 되는거지?
+
+JWT로 DB에 token base인증 진행 / REST로 통신 axios이용 / 
+
+
+
+Join.js 
+- 회원가입
+const changeId = (event) => 
+{
+setId(event.target.value);
+} => React Form의 기본 setting
+
+- const req = {
+id: id,
+name, name,
+pwd: pwd,
+checkPwd: checkPwd,
+email: email
+} = req객체 / 안에 있는 값들은 전부 state / DTO랑 연동되어 사용
+await axios.post("http://localhost:3000/user/join", req) 
+- then(success - 200 / resp) : navigate로 페이지 이동 
+- catch(fail - exceptions / err) : alert띄워서 오류 메시지 출력
+
+
+
+Login.js
+const login = async () =>
+{
+const req = 
+{
+id: id,
+pwd: pwd
+} -> 로그인한 id와 pw를
+await axios.post("http://localhost:3000/user/login", req) -> Server에 던져준다.
+Server에서 확인 후정보 일치하면, Token생성 / 일치 안 하면, alert창 띄운다.
+
+// JWT 토큰 저장
+localStorage.setItem("bbs_access_token", resp.data.jwt);
+localStorage.setItem("id", resp.data.id);
+
+
+const { auth, setAuth } = useContext(AuthContext); -> setAuth로 state를 받으면 AuthContext에 전달하고, 전달 받은 값을 다시 auth로
+const { headers, setHeaders } = useContext(HttpHeadersContext); -> setHeader로 전달
+const navigate = useNavigate(); -> navigate를 이용해
+
+Token - 처음 생성 : 짧게, Refresh Token : 길게
+
+
+
+Server로부터 받아온 값(JWT, req객체(id, pw)) -> setAuth에 들어가고 AuthContext에 들어가서, auth로 이동하고
+
+
+
+
+
+Logout.js
+로그아웃 = Null값으로 바꿔서 처리 = Token값이랑 ID지운다.
+localStorage.removeItem("bbs_access_token");
+localStorage.removeItem("id");
+
+                                                                                                                
+
+
+App.js
+- AuthProvider - 하위 component에게 state(context, reducer, mobx etc...) 내려보내 주는 역할
+모든 component들이 작동
+<AuthProvider> : state 전달1 -> AuthProvider.js = 로그인한 사용자의 정보 ID, PW
+<HttpHeadersProvider> : state 전달2 -> HttpHeadersProvider.js = 로그인한 사용자의 Token 정보
+<BrowserRouter>로 묶은 상태
+
+
+
+
+AuthProvider.js
+(localStorage.getItem("id")); -> browser의 HDD(Local Storage)에 JSON Token정보(인증시 사용)를 state(=auth, setAuth)에 저장 - localhost:8090
+<AuthContext.Provider value = {value}> -> value = user의 id값
+
+
+const [auth, setAuth] = useState(localStorage.getItem("id")); -> Login에서 
+const value = {auth, setAuth };
+
+로그인한 사용자의 정보 ID, PW
+
+
+
+
+
+HttpHeadersProvider.js
+"Authorization":`Bearer ${localStorage.getItem("bbs_access_token")}` 
+-> Local Storage에 bbs token을 저장하고 이걸 state에 넣어서 data 이동 / Token값(현재 로그인한 사용자) 들어오면 Bearer이용해서 Header생성 / 이렇게 생성한 걸로 Server한테 특정 행동(CRUD) 요청
+
+로그인한 사용자의 Token 정보
+
+
+
+
+
+app폴더 - page처리 component
+Header
+Nav - 링크
+Main - 링크 클릭하면 여기에서 변화
+Footer
+
+public/index.html -> 모든 page들이 rendering되는 곳
+bootstrap넣은 상태 -> 호출해서 사용하면 된다.
+
+
+
+
+
+Nav.js 
+- const { auth, setAuth } = useContext(AuthContext); -> AuthContext(사용자 로그인 정보)이용해서 동작 / Home.js 작동
+import { AuthContext } from "../context/AuthProvider"; -> 로그인 등 회원관련 동작 시 정보 받아온다.
+(auth) ?
+<>
+{/* 회원 정보 */}
+<li className="nav-item">
+<span className="nav-link"> {auth} 님 반갑습니다 <i className="fab fa-ello"></i> &nbsp; </span>
+</li>
+{/* 로그아웃 */}
+<li className="nav-item">
+<Link className="nav-link" to="/logout"><i className="fas fa-sign-out-alt"></i> 로그아웃</Link>
+</li>
+</>
+:
+<>
+{/* 로그인 */}
+<li className="nav-item">
+<Link className="nav-link" to="/login">로그인</Link>
+</li>
+{/* 회원가입 */}
+<li className="nav-item">
+<Link className="nav-link" to="/join">회원가입</Link>
+</li>
+</> -> 그에 따라 동작 변화
+
+
+
+Login.js -> AuthProvider.js -> Nav.js -> AuthProvider.js -> LogOut.js
+
+
+
+
+Router.js
+
+
+
+Controller.js
+
+
+
+
+Application tab 
+- Local Storage : JWT 저장
+- Session Storage
+
+
+CORS
+- API통신할 때, 반드시 설정해야 한다.
+- 각 Browser마다 존재
+- Request, Response port, protocol, host이름 등 하나라도 다르면 Browser가 차단
+
+
+
+Session - user login정보(인증 정보)를 server에 담는다. -> user들 login 중가하면, Server memory 가득 찬다. -> 
+Cookie - user login정보(인증 정보)를 client의 Browser storage에 담는다.(wprj dks gkaus rmeofh dlTdma) -> 만료날짜 지정해서 자동삭제, 보안 문제 존재
+JWT - user login정보(인증 정보)를 client의 HDD(Client System)에 담는다. -> Token으로 access 허용, 차단
+
+Token = 3Block = Header ++ Payload + Verify Signature
+{
+  "sub": "admin", -> Token 소유자
+  "exp": 1712834188, -> 유효기간 만료일
+  "iat": 1712816188 -> 유효기간 시작일
+}
+
+
+
+BbsWrite.js -> 게시판 글 작성
+Bearer이용해서 글쓰기 권한도 가지고 있는지 확인하고 작성 가능하게 함(headers - Token 확인)
+작성 완료 버튼 누르면 createBbs method 호출
+req 객체 이용해서 data 전달 by axios
+
+
+
+BbsUpdate.js
+BbsList.js
+BbsComment.js
+BbsDetail.js
+
+
