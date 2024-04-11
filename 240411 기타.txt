@@ -258,6 +258,30 @@ Comment.xml - 댓글 관련 SQL Query
 Bbs.xml - 게시판 관련 SQL Query
 
 
+
+bbs.*패키지들 - 게시판 관련 Domain
+
+- bbs.controller.BbsController.java
+생성자 주입 DI과정 생략도 가능함
+
+
+- bbs.dto.request.CreateBbsRequest.java
+React에서 data 넘어올 때 주고 받을 형식
+
+
+- bbs.dto.param.CreateBpsParam.java
+
+
+- bbs.dao.BbsDao.java
+@Mapper - ~.xml과 맵핑
+
+- bbs.service.BbsService.java
+dao.createBbs(param); - 매핑된 값을 이용해서 생성
+
+
+
+
+
 ---------------------------------------------------------------------------------------------------------------------------------------------
 
 React : 8090 port이용해서 open한 다음 3000 port이용해서 작동한다.
@@ -443,7 +467,8 @@ BbsWrite.js -> 게시판 글 작성
 Bearer이용해서 글쓰기 권한도 가지고 있는지 확인하고 작성 가능하게 함(headers - Token 확인)
 작성 완료 버튼 누르면 createBbs method 호출
 req 객체 이용해서 data 전달 by axios
-
+Create method 실행시켜서 F12누르고 Network tab Headers보면 Authorization이 Bearer다.
+다 실행되고 난 뒤, 게시판 상세페이지로 넘어가도록 설정된 상태
 
 
 BbsUpdate.js
